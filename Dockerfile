@@ -70,6 +70,8 @@ RUN cd /root/janus-gateway && \
                 --disable-plugin-recordplay \
                 --disable-plugin-videocall \
                 --disable-plugin-voicemail \
+		--disable-plugin-echotest \
+		--disable-plugin-nosip \
                 --disable-rabbitmq \
                 --disable-mqtt \
                 --disable-unix-sockets \
