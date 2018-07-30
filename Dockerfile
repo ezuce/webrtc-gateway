@@ -40,9 +40,9 @@ RUN cd /root && wget https://nice.freedesktop.org/releases/libnice-0.1.13.tar.gz
         make && \
         make install
 
-RUN cd /root && wget https://github.com/cisco/libsrtp/archive/v1.6.0.tar.gz -O libsrtp-1.6.0.tar.gz && \
-        tar xfv libsrtp-1.6.0.tar.gz && \
-        cd /root/libsrtp-1.6.0 && \
+RUN cd /root && wget https://github.com/cisco/libsrtp/archive/v2.0.0.tar.gz -O libsrtp-2.0.0.tar.gz && \
+        tar xfv libsrtp-2.0.0.tar.gz && \
+        cd /root/libsrtp-2.0.0 && \
         ./configure --prefix=/usr --enable-openssl && \
         make shared_library && \
         make install
@@ -104,33 +104,3 @@ EXPOSE 30000-31000/udp
 RUN apt-get clean && apt-get autoclean && apt-get autoremove
 
 ENTRYPOINT ["/opt/janus/bin/janus"]
-
-
-
-
-
-# Copy installation scripts in
-#COPY *.sh ./
-
-# Prepare the system
-#RUN ./install_depends.sh
-
-# Install libsrtp 2.0.0
-#RUN ./libsrtp.sh
-
-# Compile & install Janus
-#RUN ./install_janus.sh
-
-# Put configs in place
-#COPY conf/*.cfg /opt/janus/etc/janus/
-
-# Put certs in place
-COPY certs/* /opt/janus/share/janus/certs/
-
-# Declare the ports we use
-#EXPOSE 8088 8089
-
-#EXPOSE 30000-31000/udp
-
-# Define the default start-up command
-#CMD ./startup.sh
