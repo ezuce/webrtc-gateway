@@ -1,0 +1,79 @@
+diff -urN sofia-sip-1.12.11/libsofia-sip-ua/iptsec/auth_client.c sofia-sip-1.12.11-semicolonfix/libsofia-sip-ua/iptsec/auth_client.c
+--- sofia-sip-1.12.11/libsofia-sip-ua/iptsec/auth_client.c	2011-03-11 15:49:18.000000000 +0100
++++ sofia-sip-1.12.11-semicolonfix/libsofia-sip-ua/iptsec/auth_client.c	2017-07-05 15:21:40.033211975 +0200
+@@ -311,7 +311,7 @@
+ int auc_credentials(auth_client_t **auc_list, su_home_t *home,
+ 		    char const *data)
+ {
+-  int retval = 0, match;
++  int retval = 0, match, span;
+   char *s0, *s;
+   char *scheme = NULL, *user = NULL, *pass = NULL, *realm = NULL;
+ 
+@@ -330,27 +330,57 @@
+       realm = s;
+       s += span_quoted(s);
+       if (*s == ':')
+-	*s++ = 0;
++        *s++ = 0;
+       else
+-	realm = NULL, s = NULL;
++        realm = NULL, s = NULL;
+     }
+     else
+       s = NULL;
+   }
+-  if (s && (s = strchr(user = s, ':')))
+-    *s++ = 0;
+-  if (s && (s = strchr(pass = s, ':')))
+-    *s++ = 0;
++  if (s) {
++    if (*s == '"') {
++      user = s+1;
++      span = span_quoted(s);
++      if (span) {
++        s += span-1;
++        *s++ = 0;
++      }
++      if (*s == ':')
++        *s++ = 0;
++      else
++        user = NULL, s = NULL;
++    }
++    else {
++      if (s = strchr(user = s, ':'))
++        *s++ = 0;
++    }
++  }
++  if (s) {
++    if (*s == '"') {
++      pass = s+1;
++      span = span_quoted(s);
++      if (span) {
++        s += span-1;
++        *s++ = 0;
++      }
++      if (*s == ':')
++        *s++ = 0;
++    }
++    else {
++      if (s = strchr(pass = s, ':'))
++        *s++ = 0;
++    }
++  }
+ 
+   if (scheme && realm && user && pass) {
+     for (; *auc_list; auc_list = &(*auc_list)->ca_next) {
+       match = ca_credentials(*auc_list, scheme, realm, user, pass);
+       if (match < 0) {
+-	retval = -1;
+-	break;
++        retval = -1;
++        break;
+       }
+       if (match)
+-	retval++;
++        retval++;
+     }
+   }
+ 

@@ -46,16 +46,16 @@ RUN cd /root && wget https://github.com/cisco/libsrtp/archive/v1.6.0.tar.gz -O l
         ./configure --prefix=/usr --enable-openssl && \
         make shared_library && \
         make install
+RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
 RUN cd /root && wget http://conf.meetecho.com/sofiasip/sofia-sip-1.12.11.tar.gz && \
         tar xfv sofia-sip-1.12.11.tar.gz && \
         cd sofia-sip-1.12.11 && \
-        wget http://conf.meetecho.com/sofiasip/0001-fix-undefined-behaviour.patch && \
-        wget http://conf.meetecho.com/sofiasip/sofiasip-semicolon-authfix.diff && \
-        patch -p1 -u < 0001-fix-undefined-behaviour.patch && \
-        patch -p1 -u < sofiasip-semicolon-authfix.diff && \
+        #wget http://conf.meetecho.com/sofiasip/0001-fix-undefined-behaviour.patch && \
+        #wget http://conf.meetecho.com/sofiasip/sofiasip-semicolon-authfix.diff && \
+        patch -p1 -u < ../janus-gateway/patches/0001-fix-undefined-behaviour.patch && \
+        patch -p1 -u < ../anus-gateway/patches/sofiasip-semicolon-authfix.diff && \
         ./configure --prefix=/usr && \
         make && make install
-RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
 RUN cd /root/janus-gateway && \
         ./autogen.sh && \
         ./configure \
