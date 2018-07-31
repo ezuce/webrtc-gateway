@@ -70,7 +70,7 @@ RUN cd /root/janus-gateway && \
                 --disable-plugin-recordplay \
                 --disable-plugin-videocall \
                 --disable-plugin-voicemail \
-		--disable-plugin-echotest \
+		#--disable-plugin-echotest \
 		--disable-plugin-nosip \
                 --disable-rabbitmq \
                 --disable-mqtt \
@@ -88,7 +88,7 @@ RUN sed -i "s/;secure_port = 8089/secure_port = 8089/g" /opt/janus/etc/janus/jan
 #RUN sed -i "s/enabled = no/enabled = yes/g" /opt/janus/etc/janus/janus.eventhandler.sampleevh.cfg
 #RUN sed -i "s\^backend.*path$\backend = http://janus.click2vox.io:7777\g" /opt/janus/etc/janus/janus.eventhandler.sampleevh.cfg
 #RUN sed -i s/grouping = yes/grouping = no/g /opt/janus/etc/janus/janus.eventhandler.sampleevh.cfg
-RUN sed -i "s/behind_nat = no/behind_nat = yes/g" /opt/janus/etc/janus/janus.plugin.sip.cfg
+#RUN sed -i "s/behind_nat = no/behind_nat = yes/g" /opt/janus/etc/janus/janus.plugin.sip.cfg
 RUN sed -i "s/rtp_port_range = 20000-40000/rtp_port_range = 30000-31000/g" /opt/janus/etc/janus/janus.plugin.sip.cfg
 RUN sed -i "s/;rtp_port_range = 20000-40000/rtp_port_range = 30000-31000/g" /opt/janus/etc/janus/janus.cfg
 #RUN sed -i "s/;nat_1_1_mapping = 1.2.3.4/nat_1_1_mapping = 172.17.0.2/g" /opt/janus/etc/janus/janus.cfg
