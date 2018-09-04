@@ -59,6 +59,8 @@ RUN cd /root && wget http://conf.meetecho.com/sofiasip/sofia-sip-1.12.11.tar.gz 
         make && make install
 RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
 RUN cd /root/janus-gateway && \
+	git pull && \
+	#git checkout 198e4c9c1aca4a2356c50c07ff43967db4f20120 && \
         ./autogen.sh && \
         ./configure \
                 --prefix=/opt/janus \
@@ -70,6 +72,7 @@ RUN cd /root/janus-gateway && \
                 --disable-plugin-recordplay \
                 --disable-plugin-videocall \
                 --disable-plugin-voicemail \
+		--disable-plugin-lua \
 		#--disable-plugin-echotest \
 		--disable-plugin-nosip \
                 --disable-rabbitmq \
