@@ -60,8 +60,8 @@ RUN cd /root && wget http://conf.meetecho.com/sofiasip/sofia-sip-1.12.11.tar.gz 
 RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
 RUN cd /root/janus-gateway && \
 	git pull && \
-	#git checkout 198e4c9c1aca4a2356c50c07ff43967db4f20120 && \
-        ./autogen.sh && \
+	patch -p1 -u < /root/sip_call.patch && \
+	./autogen.sh && \
         ./configure \
                 --prefix=/opt/janus \
                 --disable-docs \
@@ -84,6 +84,8 @@ RUN cd /root/janus-gateway && \
         make install && \
         make configs
 RUN sed -i "s/admin_http = no/admin_http = yes/g" /opt/janus/etc/janus/janus.transport.http.cfg
+RUN sed -i "s/admin_https = no/admin_https = yes/g" /opt/janus/etc/janus/janus.transport.http.cfg
+RUN sed -i "s/;admin_secure_port = 7889/admin_secure_port = 7089/g" /opt/janus/etc/janus/janus.transport.http.cfg
 RUN sed -i "s/https = no/https = yes/g" /opt/janus/etc/janus/janus.transport.http.cfg
 RUN sed -i "s/;secure_port = 8089/secure_port = 8089/g" /opt/janus/etc/janus/janus.transport.http.cfg
 #RUN sed -i "s/wss = no/wss = yes/g" /opt/janus/etc/janus/janus.transport.websockets.cfg
