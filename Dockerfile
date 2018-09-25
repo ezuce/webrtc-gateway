@@ -60,7 +60,7 @@ RUN cd /root && wget http://conf.meetecho.com/sofiasip/sofia-sip-1.12.11.tar.gz 
 RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
 RUN cd /root/janus-gateway && \
 	git pull && \
-	patch -p1 -u < /root/sip_call.patch && \
+	#patch -p1 -u < /root/sip_call.patch && \
 	./autogen.sh && \
         ./configure \
                 --prefix=/opt/janus \
