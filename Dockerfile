@@ -1,5 +1,9 @@
 FROM ubuntu:16.04
 MAINTAINER martin harcar <martin.harcar@ezuce.com>
+ARG private_key
+RUN echo $private_key
+ARG public_key
+RUN echo $public_key
 
 RUN apt-get update && apt-get install -y \
         build-essential \
@@ -57,9 +61,11 @@ RUN cd /root && wget http://conf.meetecho.com/sofiasip/sofia-sip-1.12.11.tar.gz 
         patch -p1 -u < /root/sofiasip-semicolon-authfix.diff && \
         ./configure --prefix=/usr && \
         make && make install
-RUN cd /root && git clone https://github.com/meetecho/janus-gateway.git
-RUN cd /root/janus-gateway && \
-	git pull && \
+RUN cd /root && wget https://github.com/meetecho/janus-gateway/archive/v0.4.5.tar.gz && \
+	tar xfv v0.4.5.tar.gz && \
+	cd janus-gateway-0.4.5 && \
+#RUN cd /root/janus-gateway && \
+	#git pull && \
 	#patch -p1 -u < /root/sip_call.patch && \
 	./autogen.sh && \
         ./configure \
@@ -96,11 +102,18 @@ RUN sed -i "s/;secure_port = 8089/secure_port = 8089/g" /opt/janus/etc/janus/jan
 #RUN sed -i "s/behind_nat = no/behind_nat = yes/g" /opt/janus/etc/janus/janus.plugin.sip.cfg
 RUN sed -i "s/rtp_port_range = 20000-40000/rtp_port_range = 30000-31000/g" /opt/janus/etc/janus/janus.plugin.sip.cfg
 RUN sed -i "s/;rtp_port_range = 20000-40000/rtp_port_range = 30000-31000/g" /opt/janus/etc/janus/janus.cfg
-#RUN sed -i "s/;nat_1_1_mapping = 1.2.3.4/nat_1_1_mapping = 172.17.0.2/g" /opt/janus/etc/janus/janus.cfg
+#RUN sed a-i "s/;nat_1_1_mapping = 1.2.3.4/nat_1_1_mapping = 172.17.0.2/g" /opt/janus/etc/janus/janus.cfg
 #RUN sed -i "s/;full_trickle = true/full_trickle = false/g" /opt/janus/etc/janus/janus.cfg
+RUN sed -i "s|mycert.pem|$public_key|g" /opt/janus/etc/janus/janus.cfg
+RUN sed -i "s|mycert.key|$private_key|g" /opt/janus/etc/janus/janus.cfg
+RUN sed -i "s|mycert.pem|$public_key|g" /opt/janus/etc/janus/janus.transport.http.cfg
+RUN sed -i "s|mycert.key|$private_key|g" /opt/janus/etc/janus/janus.transport.http.cfg 
+
+#RUN cat /opt/janus/etc/janus/janus.transport.http.cfg
+#RUN cat /opt/janus/etc/janus/janus.cfg
 
 # Put certs in place
-COPY certs/* /opt/janus/share/janus/certs/
+#COPY certs/* /opt/janus/share/janus/certs/
 
 # Declare the ports we use
 EXPOSE 8088 8089
@@ -108,6 +121,7 @@ EXPOSE 8088 8089
 EXPOSE 30000-31000/udp
 
 ### Cleaning ###
-RUN apt-get clean && apt-get autoclean && apt-get autoremove
+#RUN apt-get clean && apt-get autoclean && apt-get autoremove
 
+#ENTRYPOINT echo "Hello world"
 ENTRYPOINT ["/opt/janus/bin/janus"]
