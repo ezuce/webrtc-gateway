@@ -2,7 +2,7 @@ Docker version for Janus WebRTC
 ===============================
 
 To use proper certificates:
-Copy valid one to certs directory and rename it to mycert.key and mycert.pem
+fill correctly certificate path and keys in arguments.sh file
  
 To create docker image:
 $ sh build.sh
